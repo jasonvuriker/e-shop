@@ -7,6 +7,8 @@ public class ProductService
 {
     private readonly ShopContext _context;
 
+    public CartService CartService { get; }
+
     public ProductService(ShopContext context)
     {
         _context = context;

@@ -6,8 +6,11 @@ namespace e_shop.Application.Validators;
 
 public class CreateOrderRequestDtoValidator : AbstractValidator<CreateOrderRequestDto>
 {
-    public CreateOrderRequestDtoValidator()
+    private readonly ShopContext _context;
+
+    public CreateOrderRequestDtoValidator(ShopContext context)
     {
+        _context = context;
         RuleFor(r => r.CustomerId)
             .NotEmpty()
             .Custom(ValidateCustomer);
@@ -27,9 +30,7 @@ public class CreateOrderRequestDtoValidator : AbstractValidator<CreateOrderReque
 
     private void ValidateCustomer(int customerId, ValidationContext<CreateOrderRequestDto> context)
     {
-        using var dbContext = new ShopContext();
-
-        var isCustomerExists = dbContext.Customers.Any(r => r.Id == customerId);
+        var isCustomerExists = _context.Customers.Any(r => r.Id == customerId);
 
         if (!isCustomerExists)
         {

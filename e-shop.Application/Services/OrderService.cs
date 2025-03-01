@@ -1,4 +1,5 @@
 ﻿using e_shop.DataAccess;
+using eShopNew.Entities;
 
 namespace e_shop.Application.Services;
 
@@ -11,5 +12,8 @@ public class OrderService
         _context = context;
     }
 
-    public async Task<>
+    public async Task AddOrder(Order order)
+    {
+        await _context.Orders.AddAsync(order);
+    }
 }

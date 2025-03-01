@@ -11,11 +11,17 @@ namespace e_shop.WebApi.Controllers;
 [ApiController]
 public class CustomersController : ControllerBase
 {
+    private readonly ShopContext _context;
+
+    public CustomersController(ShopContext context)
+    {
+        _context = context;
+    }
+
     [HttpGet("all-customers")]
     public IActionResult GetAllCustomers()
     {
-        using var context = new ShopContext();
-        var customers = context
+        var customers = _context
             .Customers
             .Select(r => new CreateCustomerRequestDto()
             {
@@ -50,23 +56,21 @@ public class CustomersController : ControllerBase
             Active = true,
         };
 
-        await using var context = new ShopContext();
-        await context.Customers.AddAsync(customer);
-        await context.SaveChangesAsync();
+        await _context.Customers.AddAsync(customer);
+        await _context.SaveChangesAsync();
         return Ok(customer);
     }
 
     [HttpDelete("remove-customer")]
     public async Task<IActionResult> RemoveCustomer([FromQuery] int id)
     {
-        await using var context = new ShopContext();
-        var customer = await context.Customers.FindAsync(id);
+        var customer = await _context.Customers.FindAsync(id);
         if (customer == null)
         {
             return NotFound();
         }
-        context.Customers.Remove(customer);
-        await context.SaveChangesAsync();
+        _context.Customers.Remove(customer);
+        await _context.SaveChangesAsync();
         return Ok();
     }
 }

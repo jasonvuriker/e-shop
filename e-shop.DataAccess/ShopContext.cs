@@ -25,6 +25,13 @@ public class ShopContext : DbContext
 
     public DbSet<OrderItem> OrderItems { get; set; }
 
+    public ShopContext(DbContextOptions options)
+        : base(options)
+    {
+
+    }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopContext).Assembly);
@@ -67,16 +74,5 @@ public class ShopContext : DbContext
 
             builder.Property(r => r.Quantity);
         });
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var connectionString = "Server=localhost;Port=5432;Database=eCommerce;User Id=postgres;Password=postgres;";
-
-        optionsBuilder
-            .UseNpgsql(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .UseSnakeCaseNamingConvention()
-            .AddInterceptors(new AuditInterceptor());
     }
 }
